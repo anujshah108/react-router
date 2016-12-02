@@ -7,7 +7,7 @@ const Sidebar = (props) => {
 
   return (
     <sidebar>
-      <img src="juke.svg" className="logo" />
+      <img src="/juke.svg" className="logo" />
       <section>
         <h4 className="menu-item active">
           <Link to={`/albums`} onClick={deselectAlbum}>ALBUMS</Link>

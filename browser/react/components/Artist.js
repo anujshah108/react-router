@@ -12,13 +12,6 @@ import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
 class Artist extends React.Component{
   constructor(props){
   super(props)
-  this.state = {
-  artistObj: {},
-  artistAlbums: [],
-  artistSongs: [],
-  currentSong: {}
-
-  }
 
 }
 
@@ -28,17 +21,15 @@ componentDidMount () {
     axios.get(`/api/artists/${artistId}`)
       .then(res => res.data)
       .then(artist => {
-       this.setState({artistObj: artist})
-
-
+      this.props.onLoadArtists(artist)
       })
 
     axios.get(`/api/artists/${artistId}/albums`)
       .then(res => res.data)
       .then(albums => {
-       this.props.onLoad(convertAlbums(albums))
-
+       this.props.onLoadArtist(convertAlbums(albums))
       })
+
       let songsArr = []
     axios.get(`/api/artists/${artistId}/songs`)
       .then(res => res.data)
@@ -57,16 +48,25 @@ componentDidMount () {
   render(){
   const artistId = this.props.routeParams.artistId;
   const children = this.props.children;
+  const propsToPassToChildren = {
+    albums: this.props.currentAlbums,
+    songs: this.props.songs,
+    selectAlbum: this.props.selectAlbum,
+    toggleOne: this.props.toggleOne,
+    currentSong: this.props.currentSong,
+    isPlaying: this.props.isPlaying
+
+  }
 
   return  (
 
           <div>
-  <h3>{ this.state.artistObj.name }</h3>
+  <h3>{ this.props.selectedArtist.name }</h3>
   <ul className="nav nav-tabs">
     <li><Link to={`/artists/${artistId}/albums`} >ALBUMS</Link></li>
     <li><Link to={`/artists/${artistId}/songs`}>SONGS</Link></li>
   </ul>
-  { children && React.cloneElement(children, this.props) }
+  { children && React.cloneElement(children, propsToPassToChildren) }
 </div>
   )
 }

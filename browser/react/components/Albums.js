@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, hashHistory, IndexRedirect, Link } from 'react-router';
+import { Router, Route, IndexRedirect, Link } from 'react-router';
 
 const Albums = (props) => {
 

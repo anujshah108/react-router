@@ -27,7 +27,7 @@ componentDidMount () {
   return (
     <div className="album">
       <div>
-        <h3>{ album.name }</h3>
+        <h3>{ album.name } <button className="btn example-btn fa fa-share-square-o"></button></h3>
         <img src={ album.imageUrl } className="img-thumbnail" />
       </div>
       <Songs
