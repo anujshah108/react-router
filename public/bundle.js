@@ -76,6 +76,10 @@
 	
 	var _Artist2 = _interopRequireDefault(_Artist);
 	
+	var _Songs = __webpack_require__(271);
+	
+	var _Songs2 = _interopRequireDefault(_Songs);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	_reactDom2.default.render(_react2.default.createElement(
@@ -86,9 +90,11 @@
 	    { path: '/', component: _AppContainer2.default },
 	    _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/albums' }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/albums', component: _Albums2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'albums/:albumId', component: _Album2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/albums/:albumId', component: _Album2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/artists', component: _Artists2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'artists/:artistId', component: _Artist2.default })
+	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId', component: _Artist2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId/albums', component: _Albums2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId/songs', component: _Songs2.default })
 	  )
 	), document.getElementById('app'));
 
@@ -21700,7 +21706,8 @@
 	            toggleOne: this.toggleOne,
 	            albums: this.state.albums,
 	            selectAlbum: this.selectAlbum,
-	            artists: this.state.artists
+	            artists: this.state.artists,
+	            selectedArtist: this.state.selectedArtist
 	          }) : null
 	        ),
 	        _react2.default.createElement(_Player2.default, {
@@ -29396,8 +29403,6 @@
 	  value: true
 	});
 	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(1);
@@ -29482,6 +29487,14 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var artistId = this.props.routeParams.artistId;
+	      var children = this.props.children;
+	      var propsToPassToChildren = {
+	        artistObj: {},
+	        artistAlbums: [],
+	        artistSongs: [],
+	        currentSong: {}
+	      };
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -29490,13 +29503,29 @@
 	          null,
 	          this.state.artistObj.name
 	        ),
-	        _react2.default.createElement(_Albums2.default, { albums: this.state.artistAlbums, selectAlbums: this.props.selectAlbum }),
 	        _react2.default.createElement(
-	          'h4',
-	          null,
-	          'SONGS'
+	          'ul',
+	          { className: 'nav nav-tabs' },
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/artists/' + artistId + '/albums' },
+	              'ALBUMS'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/artists/' + artistId + '/songs' },
+	              'SONGS'
+	            )
+	          )
 	        ),
-	        _react2.default.createElement(_Songs2.default, _extends({ songs: this.state.artistSongs }, this.props))
+	        children && _react2.default.cloneElement(children, propsToPassToChildren)
 	      );
 	    }
 	  }]);
@@ -29505,6 +29534,22 @@
 	}(_react2.default.Component);
 	
 	exports.default = Artist;
+	
+	// <div>
+	//   <h3>{this.state.artistObj.name}</h3>
+	//     <Albums albums= {this.state.artistAlbums} selectAlbums= {this.props.selectAlbum} />
+	//   <h4>SONGS</h4>
+	//   <Songs songs= {this.state.artistSongs} {...this.props} />
+	// </div>
+	
+	//           <div>
+	//   <h3>{ this.state.artistObj.name }</h3>
+	//   <ul className="nav nav-tabs">
+	//     <li><Link to={`/artists/${artistId}/albums`}>ALBUMS</Link></li>
+	//     <li><Link to={`/artists/${artistId}/songs`}>SONGS</Link></li>
+	//   </ul>
+	//   { children && React.cloneElement(children, propsToPassToChildren) }
+	// </div>
 
 /***/ }
 /******/ ]);

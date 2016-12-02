@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { Router, Route, hashHistory, IndexRedirect, Link } from 'react-router';
 import axios from 'axios';
@@ -47,16 +49,45 @@ componentDidMount () {
 }
 
   render(){
+  const artistId = this.props.routeParams.artistId;
+  const children = this.props.children;
+  const propsToPassToChildren = {
+    artistObj: {},
+  artistAlbums: [],
+  artistSongs: [],
+  currentSong: {}
+}
   return  (
-      <div>
-        <h3>{this.state.artistObj.name}</h3>
-          <Albums albums= {this.state.artistAlbums} selectAlbums= {this.props.selectAlbum} />
-        <h4>SONGS</h4>
-        <Songs songs= {this.state.artistSongs} {...this.props} />
-      </div>
+
+          <div>
+  <h3>{ this.state.artistObj.name }</h3>
+  <ul className="nav nav-tabs">
+    <li><Link to={`/artists/${artistId}/albums`}>ALBUMS</Link></li>
+    <li><Link to={`/artists/${artistId}/songs`}>SONGS</Link></li>
+  </ul>
+  { children && React.cloneElement(children, propsToPassToChildren) }
+</div>
   )
 }
 }
 
 
 export default Artist;
+
+
+
+      // <div>
+      //   <h3>{this.state.artistObj.name}</h3>
+      //     <Albums albums= {this.state.artistAlbums} selectAlbums= {this.props.selectAlbum} />
+      //   <h4>SONGS</h4>
+      //   <Songs songs= {this.state.artistSongs} {...this.props} />
+      // </div>
+
+//           <div>
+//   <h3>{ this.state.artistObj.name }</h3>
+//   <ul className="nav nav-tabs">
+//     <li><Link to={`/artists/${artistId}/albums`}>ALBUMS</Link></li>
+//     <li><Link to={`/artists/${artistId}/songs`}>SONGS</Link></li>
+//   </ul>
+//   { children && React.cloneElement(children, propsToPassToChildren) }
+// </div>
