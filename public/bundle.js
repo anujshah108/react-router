@@ -21697,7 +21697,7 @@
 	            album: this.state.selectedAlbum,
 	            currentSong: this.state.currentSong,
 	            isPlaying: this.state.isPlaying,
-	            toggle: this.toggleOne,
+	            toggleOne: this.toggleOne,
 	            albums: this.state.albums,
 	            selectAlbum: this.selectAlbum,
 	            artists: this.state.artists
@@ -29396,6 +29396,8 @@
 	  value: true
 	});
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(1);
@@ -29407,6 +29409,20 @@
 	var _axios = __webpack_require__(179);
 	
 	var _axios2 = _interopRequireDefault(_axios);
+	
+	var _Albums = __webpack_require__(206);
+	
+	var _Albums2 = _interopRequireDefault(_Albums);
+	
+	var _Album = __webpack_require__(270);
+	
+	var _Album2 = _interopRequireDefault(_Album);
+	
+	var _Songs = __webpack_require__(271);
+	
+	var _Songs2 = _interopRequireDefault(_Songs);
+	
+	var _utils = __webpack_require__(274);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -29424,7 +29440,14 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Artist.__proto__ || Object.getPrototypeOf(Artist)).call(this, props));
 	
-	    _this.artistObj = {};
+	    _this.state = {
+	      artistObj: {},
+	      artistAlbums: [],
+	      artistSongs: [],
+	      currentSong: {}
+	
+	    };
+	
 	    return _this;
 	  }
 	
@@ -29434,25 +29457,26 @@
 	      var _this2 = this;
 	
 	      var artistId = this.props.routeParams.artistId;
-	      var artistAlbums = [];
-	      var artistSongs = [];
 	
 	      _axios2.default.get('/api/artists/' + artistId).then(function (res) {
 	        return res.data;
 	      }).then(function (artist) {
-	        _this2.artistObj = artist;
+	        _this2.setState({ artistObj: artist });
 	      });
 	
 	      _axios2.default.get('/api/artists/' + artistId + '/albums').then(function (res) {
 	        return res.data;
 	      }).then(function (albums) {
-	        _this2.artistAlbums = albums;
+	        _this2.setState({ artistAlbums: (0, _utils.convertAlbums)(albums) });
 	      });
 	
 	      _axios2.default.get('/api/artists/' + artistId + '/songs').then(function (res) {
 	        return res.data;
 	      }).then(function (songs) {
-	        _this2.artistSongs = songs;
+	        _this2.setState({ artistSongs: songs.map(function (song) {
+	            return (0, _utils.convertSong)(song);
+	          })
+	        });
 	      });
 	    }
 	  }, {
@@ -29464,18 +29488,15 @@
 	        _react2.default.createElement(
 	          'h3',
 	          null,
-	          this.artistObj.name
+	          this.state.artistObj.name
 	        ),
-	        _react2.default.createElement(
-	          'h4',
-	          null,
-	          'ALBUMS'
-	        ),
+	        _react2.default.createElement(_Albums2.default, { albums: this.state.artistAlbums, selectAlbums: this.props.selectAlbum }),
 	        _react2.default.createElement(
 	          'h4',
 	          null,
 	          'SONGS'
-	        )
+	        ),
+	        _react2.default.createElement(_Songs2.default, _extends({ songs: this.state.artistSongs }, this.props))
 	      );
 	    }
 	  }]);

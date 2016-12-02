@@ -1,47 +1,58 @@
 import React from 'react';
 import { Router, Route, hashHistory, IndexRedirect, Link } from 'react-router';
 import axios from 'axios';
+import Albums from './Albums';
+import Album from './Album';
+import Songs from './Songs';
+import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
+
 
 class Artist extends React.Component{
   constructor(props){
   super(props)
-  this.artistObj = {}
+  this.state = {
+  artistObj: {},
+  artistAlbums: [],
+  artistSongs: [],
+  currentSong: {}
+
+  }
+
 }
 
 componentDidMount () {
   const artistId = this.props.routeParams.artistId;
-  let artistAlbums = []
-  let artistSongs = []
 
     axios.get(`/api/artists/${artistId}`)
       .then(res => res.data)
       .then(artist => {
-       this.artistObj = artist
+       this.setState({artistObj: artist})
 
       })
 
     axios.get(`/api/artists/${artistId}/albums`)
       .then(res => res.data)
       .then(albums => {
-       this.artistAlbums = albums
+       this.setState({artistAlbums: convertAlbums(albums)})
 
       })
 
     axios.get(`/api/artists/${artistId}/songs`)
       .then(res => res.data)
-      .then(songs => {
-       this.artistSongs = songs
-
-      })
-
+      .then(songs => { this.setState({artistSongs: songs.map(song => {
+        return convertSong(song)
+           })
+          })
+        })
 }
 
   render(){
   return  (
       <div>
-        <h3>{this.artistObj.name}</h3>
-        <h4>ALBUMS</h4>
+        <h3>{this.state.artistObj.name}</h3>
+          <Albums albums= {this.state.artistAlbums} selectAlbums= {this.props.selectAlbum} />
         <h4>SONGS</h4>
+        <Songs songs= {this.state.artistSongs} {...this.props} />
       </div>
   )
 }

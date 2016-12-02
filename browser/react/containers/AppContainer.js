@@ -122,7 +122,7 @@ export default class AppContainer extends Component {
       album: this.state.selectedAlbum,
       currentSong: this.state.currentSong,
       isPlaying: this.state.isPlaying,
-      toggle: this.toggleOne,
+      toggleOne: this.toggleOne,
       albums: this.state.albums,
       selectAlbum: this.selectAlbum, 
       artists: this.state.artists
