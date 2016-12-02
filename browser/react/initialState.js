@@ -2,7 +2,7 @@ const initialState = {
   albums: [],
   selectedAlbum: {},
   currentSong: {},
-  currentSongList: [],
+  songs: [],
   isPlaying: false,
   progress: 0,
   artists: [],

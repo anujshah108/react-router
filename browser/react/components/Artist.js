@@ -30,42 +30,43 @@ componentDidMount () {
       .then(artist => {
        this.setState({artistObj: artist})
 
+
       })
 
     axios.get(`/api/artists/${artistId}/albums`)
       .then(res => res.data)
       .then(albums => {
-       this.setState({artistAlbums: convertAlbums(albums)})
+       this.props.onLoad(convertAlbums(albums))
 
       })
-
+      let songsArr = []
     axios.get(`/api/artists/${artistId}/songs`)
       .then(res => res.data)
-      .then(songs => { this.setState({artistSongs: songs.map(song => {
-        return convertSong(song)
-           })
+      .then(songs => {
+         songsArr= songs.map(song => {
+          return convertSong(song)
           })
+         this.props.onLoadSong(songsArr)
         })
-}
+
+
+
+
+    }
 
   render(){
   const artistId = this.props.routeParams.artistId;
   const children = this.props.children;
-  const propsToPassToChildren = {
-    artistObj: {},
-  artistAlbums: [],
-  artistSongs: [],
-  currentSong: {}
-}
+
   return  (
 
           <div>
   <h3>{ this.state.artistObj.name }</h3>
   <ul className="nav nav-tabs">
-    <li><Link to={`/artists/${artistId}/albums`}>ALBUMS</Link></li>
+    <li><Link to={`/artists/${artistId}/albums`} >ALBUMS</Link></li>
     <li><Link to={`/artists/${artistId}/songs`}>SONGS</Link></li>
   </ul>
-  { children && React.cloneElement(children, propsToPassToChildren) }
+  { children && React.cloneElement(children, this.props) }
 </div>
   )
 }
@@ -91,3 +92,11 @@ export default Artist;
 //   </ul>
 //   { children && React.cloneElement(children, propsToPassToChildren) }
 // </div>
+
+//   const propsToPassToChildren = {
+//     artistObj: {},
+//   albums: this.props.albums,
+//   songs: this.props.currentSongList,
+//   currentSong: {}
+//   // ...this.props
+// }

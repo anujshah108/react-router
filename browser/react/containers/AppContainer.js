@@ -23,6 +23,8 @@ export default class AppContainer extends Component {
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
     this.deselectAlbum = this.deselectAlbum.bind(this);
+    this.onLoad = this.onLoad.bind(this);
+    this.onLoadSong = this.onLoadSong.bind(this);
   }
 
   componentDidMount () {
@@ -46,6 +48,11 @@ export default class AppContainer extends Component {
   onLoad (albums) {
     this.setState({
       albums: albums
+    });
+  }
+
+    onLoadSong (songs) {    this.setState({
+      songs: songs
     });
   }
 
@@ -109,6 +116,9 @@ export default class AppContainer extends Component {
     this.setState({ selectedAlbum: {}});
   }
 
+
+
+
   render () {
     return (
       <div id="main" className="container-fluid">
@@ -126,14 +136,17 @@ export default class AppContainer extends Component {
       albums: this.state.albums,
       selectAlbum: this.selectAlbum, 
       artists: this.state.artists,
-      selectedArtist : this.state.selectedArtist
+      selectedArtist : this.state.selectedArtist,
+      onLoad : this.onLoad,
+      onLoadSong : this.onLoadSong,
+      songs: this.state.songs
     })
     : null
 }
         </div>
         <Player
           currentSong={this.state.currentSong}
-          currentSongList={this.state.currentSongList}
+          songs={this.state.songs}
           isPlaying={this.state.isPlaying}
           progress={this.state.progress}
           next={this.next}

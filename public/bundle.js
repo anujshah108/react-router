@@ -92,9 +92,12 @@
 	    _react2.default.createElement(_reactRouter.Route, { path: '/albums', component: _Albums2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/albums/:albumId', component: _Album2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/artists', component: _Artists2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId', component: _Artist2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId/albums', component: _Albums2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/artists/:artistId/songs', component: _Songs2.default })
+	    _react2.default.createElement(
+	      _reactRouter.Route,
+	      { path: '/artists/:artistId', component: _Artist2.default },
+	      _react2.default.createElement(_reactRouter.Route, { path: 'albums', component: _Albums2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: 'songs', component: _Songs2.default })
+	    )
 	  )
 	), document.getElementById('app'));
 
@@ -21577,6 +21580,8 @@
 	    _this.prev = _this.prev.bind(_this);
 	    _this.selectAlbum = _this.selectAlbum.bind(_this);
 	    _this.deselectAlbum = _this.deselectAlbum.bind(_this);
+	    _this.onLoad = _this.onLoad.bind(_this);
+	    _this.onLoadSong = _this.onLoadSong.bind(_this);
 	    return _this;
 	  }
 	
@@ -21611,6 +21616,13 @@
 	    value: function onLoad(albums) {
 	      this.setState({
 	        albums: albums
+	      });
+	    }
+	  }, {
+	    key: 'onLoadSong',
+	    value: function onLoadSong(songs) {
+	      this.setState({
+	        songs: songs
 	      });
 	    }
 	  }, {
@@ -21707,12 +21719,15 @@
 	            albums: this.state.albums,
 	            selectAlbum: this.selectAlbum,
 	            artists: this.state.artists,
-	            selectedArtist: this.state.selectedArtist
+	            selectedArtist: this.state.selectedArtist,
+	            onLoad: this.onLoad,
+	            onLoadSong: this.onLoadSong,
+	            songs: this.state.songs
 	          }) : null
 	        ),
 	        _react2.default.createElement(_Player2.default, {
 	          currentSong: this.state.currentSong,
-	          currentSongList: this.state.currentSongList,
+	          songs: this.state.songs,
 	          isPlaying: this.state.isPlaying,
 	          progress: this.state.progress,
 	          next: this.next,
@@ -23230,7 +23245,7 @@
 	  albums: [],
 	  selectedAlbum: {},
 	  currentSong: {},
-	  currentSongList: [],
+	  songs: [],
 	  isPlaying: false,
 	  progress: 0,
 	  artists: [],
@@ -29472,16 +29487,16 @@
 	      _axios2.default.get('/api/artists/' + artistId + '/albums').then(function (res) {
 	        return res.data;
 	      }).then(function (albums) {
-	        _this2.setState({ artistAlbums: (0, _utils.convertAlbums)(albums) });
+	        _this2.props.onLoad((0, _utils.convertAlbums)(albums));
 	      });
-	
+	      var songsArr = [];
 	      _axios2.default.get('/api/artists/' + artistId + '/songs').then(function (res) {
 	        return res.data;
 	      }).then(function (songs) {
-	        _this2.setState({ artistSongs: songs.map(function (song) {
-	            return (0, _utils.convertSong)(song);
-	          })
+	        songsArr = songs.map(function (song) {
+	          return (0, _utils.convertSong)(song);
 	        });
+	        _this2.props.onLoadSong(songsArr);
 	      });
 	    }
 	  }, {
@@ -29489,12 +29504,7 @@
 	    value: function render() {
 	      var artistId = this.props.routeParams.artistId;
 	      var children = this.props.children;
-	      var propsToPassToChildren = {
-	        artistObj: {},
-	        artistAlbums: [],
-	        artistSongs: [],
-	        currentSong: {}
-	      };
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -29525,7 +29535,7 @@
 	            )
 	          )
 	        ),
-	        children && _react2.default.cloneElement(children, propsToPassToChildren)
+	        children && _react2.default.cloneElement(children, this.props)
 	      );
 	    }
 	  }]);
@@ -29550,6 +29560,14 @@
 	//   </ul>
 	//   { children && React.cloneElement(children, propsToPassToChildren) }
 	// </div>
+	
+	//   const propsToPassToChildren = {
+	//     artistObj: {},
+	//   albums: this.props.albums,
+	//   songs: this.props.currentSongList,
+	//   currentSong: {}
+	//   // ...this.props
+	// }
 
 /***/ }
 /******/ ]);
